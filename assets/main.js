@@ -5,7 +5,7 @@ function preload() {
 
     game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles-1', 'assets/tiles-1.png');
-    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+    game.load.spritesheet('dude', 'assets/personagem/wheelchair2.png', 32, 48);
     game.load.spritesheet('droid', 'assets/droid.png', 32, 32);
     game.load.image('starSmall', 'assets/star.png');
     game.load.image('starBig', 'assets/star2.png');
@@ -45,7 +45,7 @@ function create() {
 
     layer.resizeWorld();
 
-    game.physics.arcade.gravity.y = 250;
+    game.physics.arcade.gravity.y = 600;
 
     player = game.add.sprite(32, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
