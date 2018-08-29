@@ -289,6 +289,7 @@ LoadingState.preload = function () {
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
+    this.game.load.spritesheet('protese', 'images/protese.png', 42, 32);
     this.game.load.spritesheet('darth', 'assets/personagem/darth.png', 32, 36);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('tp', 'images/tp.png', 168, 320);
