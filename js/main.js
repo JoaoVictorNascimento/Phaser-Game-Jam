@@ -220,12 +220,12 @@ Darth.prototype.update = function () {
     if (this.body.touching.right || this.body.blocked.right) {
         this.body.velocity.x = -Darth.SPEED; // turn left
     this.animations.play('esq');
-        
+
     }
     else if (this.body.touching.left || this.body.blocked.left) {
         this.body.velocity.x = Darth.SPEED; // turn right
     this.animations.play('dir');
-        
+
     }
 };
 
@@ -251,7 +251,7 @@ LoadingState.init = function () {
 
 LoadingState.preload = function () {
 
-    this.game.load.json('level:5', 'data/level05.json');    
+    this.game.load.json('level:5', 'data/level05.json');
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:2', 'data/level04.json');
     this.game.load.json('level:1', 'data/level02.json');
@@ -262,7 +262,7 @@ LoadingState.preload = function () {
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('background0', 'assets/inicial.jpg');    
+    this.game.load.image('background0', 'assets/inicial.jpg');
     this.game.load.image('background1', 'images/background.png');
     this.game.load.image('background2', 'images/background2.png');
     this.game.load.image('background3', 'images/background.png');
@@ -492,7 +492,8 @@ PlayState._loadLevel = function (data) {
     this.enemyWalls.visible = false;
 
     // spawn hero and enemies
-    this._spawnCharacters({hero: data.hero, spiders: data.spiders, darths: data.darths});
+
+    this._spawnCharacters({hero: data.hero, spiders: data.spiders?data.spiders:[], darths: data.darths?data.darths:[]});
 
     // spawn level decoration
     data.decoration.forEach(function (deco) {
@@ -509,7 +510,9 @@ PlayState._loadLevel = function (data) {
     data.coins.forEach(this._spawnCoin, this);
     if (data.tp)
         data.tp.forEach(this._spawnTp, this);
-    this._spawnKey(data.key.x, data.key.y);
+    if(data.key)
+        this._spawnKey(data.key.x, data.key.y);
+    if(data.door)
     this._spawnDoor(data.door.x, data.door.y);
 
     // enable gravity
