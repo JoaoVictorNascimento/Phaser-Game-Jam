@@ -172,9 +172,10 @@ function Darth(game, x, y) {
     // anchor
     this.anchor.set(0.5);
     // animation
-    this.animations.add('esq', [0, 1, 2], 8, true);
-    this.animations.add('die', [0, 4, 0, 4, 0, 4, 3, 3, 3, 3, 3, 3], 12);
-    this.animations.play('esq');
+    this.animations.add('esq', [3, 4], 8, true);
+    this.animations.add('dir', [7, 8], 8, true);
+    this.animations.add('die', [4, 7, 4, 7, 4, 7, 4, 7, 4, 7, 4, 7], 12);
+    this.animations.play('dir');
 
     // physic properties
     this.game.physics.enable(this);
@@ -192,18 +193,22 @@ Darth.prototype.update = function () {
     // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
         this.body.velocity.x = -Darth.SPEED; // turn left
+    this.animations.play('esq');
+        
     }
     else if (this.body.touching.left || this.body.blocked.left) {
         this.body.velocity.x = Darth.SPEED; // turn right
+    this.animations.play('dir');
+        
     }
 };
 
 Darth.prototype.die = function () {
     this.body.enable = false;
 
-    this.animations.play('die').onComplete.addOnce(function () {
-        this.kill();
-    }, this);
+    this.kill();
+
+
 };
 
 
@@ -223,11 +228,13 @@ LoadingState.preload = function () {
     this.game.load.json('level:5', 'data/level05.json');    
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('background', 'images/background.png');
+    this.game.load.image('background0', 'assets/inicial.jpg');    
+    this.game.load.image('background2', 'images/background.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
@@ -241,6 +248,7 @@ LoadingState.preload = function () {
     this.game.load.spritesheet('hero', 'images/wheelchair2.png', 32, 39);
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
+    this.game.load.spritesheet('darth', 'assets/personagem/darth.png', 32, 36);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
@@ -292,7 +300,7 @@ PlayState.create = function () {
     this.bgm.loopFull();
 
     // create level entities and decoration
-    this.game.add.image(0, 0, 'background');
+    this.game.add.image(0, 0, 'background'+this.level);
     this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
 
     // create UI score boards
@@ -316,6 +324,8 @@ PlayState.shutdown = function () {
 PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.platforms);
     this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
+    this.game.physics.arcade.collide(this.darths, this.platforms);
+    this.game.physics.arcade.collide(this.darths, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
 
     // hero vs coins (pick up)
@@ -332,6 +342,8 @@ PlayState._handleCollisions = function () {
         }, this);
     // collision: hero vs enemies (kill or die)
     this.game.physics.arcade.overlap(this.hero, this.spiders,
+        this._onHeroVsEnemy, null, this);
+    this.game.physics.arcade.overlap(this.hero, this.darths,
         this._onHeroVsEnemy, null, this);
 };
 
@@ -418,11 +430,12 @@ PlayState._loadLevel = function (data) {
     this.platforms = this.game.add.group();
     this.coins = this.game.add.group();
     this.spiders = this.game.add.group();
+    this.darths = this.game.add.group();
     this.enemyWalls = this.game.add.group();
     this.enemyWalls.visible = false;
 
     // spawn hero and enemies
-    this._spawnCharacters({hero: data.hero, spiders: data.spiders});
+    this._spawnCharacters({hero: data.hero, spiders: data.spiders, darths: data.darths});
 
     // spawn level decoration
     data.decoration.forEach(function (deco) {
@@ -448,6 +461,12 @@ PlayState._spawnCharacters = function (data) {
     data.spiders.forEach(function (spider) {
         let sprite = new Spider(this.game, spider.x, spider.y);
         this.spiders.add(sprite);
+    }, this);
+
+    // spawn darths
+    data.darths.forEach(function (darth) {
+        let sprite = new Darth(this.game, darth.x, darth.y);
+        this.darths.add(sprite);
     }, this);
 
     // spawn hero
