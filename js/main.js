@@ -227,7 +227,7 @@ LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');    
     this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.json('level:1', 'data/level02.json');
     this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.game.load.image('font:numbers', 'images/numbers.png');
