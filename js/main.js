@@ -462,7 +462,8 @@ PlayState._loadLevel = function (data) {
 
     // spawn platforms
     data.platforms.forEach(this._spawnPlatform, this);
-    data.elevador.forEach(this._spawnElevador, this);
+    if(data.elevador)
+        data.elevador.forEach(this._spawnElevador, this);
 
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
