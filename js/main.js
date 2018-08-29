@@ -7,7 +7,7 @@
 //
 
 
-    var temporaria = Math.floor(Math.random() * 2) + 1;
+    var temporaria = Math.floor(Math.random() * 3) + 1;
     console.log(temporaria)
 
 
@@ -31,7 +31,7 @@ function Hero(game, x, y) {
         this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
         // starting animation
     }
-    else{
+    else if(temporaria == 2){
         Phaser.Sprite.call(this, game, x, y, 'hero2');
 
         // anchor
@@ -48,6 +48,23 @@ function Hero(game, x, y) {
         this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
         // starting animation
  
+    }
+    else{
+        Phaser.Sprite.call(this, game, x, y, 'hero3');
+
+        // anchor
+        this.anchor.set(0.5, 0.5);
+        // physics properties
+        this.game.physics.enable(this);
+        this.body.collideWorldBounds = true;
+        // animations
+        this.animations.add('stop', [0, 1, 2]);
+        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('right', [ 6, 7, 8], 10, true);
+        // this.animations.add('jump', [3]);
+        // this.animations.add('fall', [4]);
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
+        // starting animation        
     }
     this.animations.play('stop');
 }
@@ -129,14 +146,6 @@ Hero.prototype._getAnimationName = function () {
     else if (this.isFrozen) {
         name = 'stop';
     }
-    // jumping right
-    // else if (this.body.velocity.y < 0 && this.body.velocity.x >= 0) {
-    //     name = 'right';
-    // }
-    // else if (this.body.velocity.y < 0 && !this.body.velocity.x >= 0) {
-    //     name = 'left';
-    // }
-    // falling
     else if (this.body.velocity.y >= 0) {
         name = 'right';
     }
@@ -383,6 +392,7 @@ LoadingState.preload = function () {
     // Carregamento do Heroi
     this.game.load.spritesheet('hero1', 'images/hiro1.png', 32, 39);
     this.game.load.spritesheet('hero2', 'images/hiro2.png', 32, 36);
+    this.game.load.spritesheet('hero3', 'images/hiro3.png', 32, 36);
 
 
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
@@ -656,10 +666,10 @@ PlayState._loadLevel = function (data) {
 
     // enable gravity
     let GRAVITY = 0
-    if(temporaria == 2){
-        GRAVITY = 890;
-    }else{
+    if(temporaria == 1){
         GRAVITY = 25200;
+    }else{
+        GRAVITY = 890;
     }
     this.game.physics.arcade.gravity.y = GRAVITY;
 };
