@@ -297,7 +297,7 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level01.json');
+    this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level03.json');
@@ -534,7 +534,10 @@ PlayState._onHeroVsDoor = function (hero, door) {
     // 'open' the door by changing its graphic and playing a sfx
     door.frame = 1;
     this.sfx.door.play();
-
+    if(this.level === 100){
+        this.life = 3;
+        this.coinPickupCount= 0;
+    }
     // play 'enter door' animation and change to the next level when it ends
     hero.freeze();
     this.game.add.tween(hero)
@@ -569,6 +572,7 @@ PlayState._loadLevel = function (data) {
     caminhoes: data.caminhoes?data.caminhoes:[]});
 
     // spawn level decoration
+    if(data.decoration)
     data.decoration.forEach(function (deco) {
         this.bgDecoration.add(
             this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
