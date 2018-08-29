@@ -253,7 +253,10 @@ LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');    
     this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.json('level:1', 'data/level02.json');
+    this.game.load.json('level:2', 'data/level03.json');
+    this.game.load.json('level:3', 'data/level04.json');
+    this.game.load.json('level:4', 'data/level01.json');
     this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.game.load.image('font:numbers', 'images/numbers.png');
@@ -261,6 +264,9 @@ LoadingState.preload = function () {
     this.game.load.image('icon:coin', 'images/coin_icon.png');
     this.game.load.image('background0', 'assets/inicial.jpg');    
     this.game.load.image('background1', 'images/background.png');
+    this.game.load.image('background2', 'images/background.png');
+    this.game.load.image('background3', 'images/background.png');
+    this.game.load.image('background4', 'images/background.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
@@ -302,7 +308,7 @@ LoadingState.create = function () {
 
 PlayState = {};
 
-const LEVEL_COUNT = 2;
+const LEVEL_COUNT = 5;
 
 PlayState.init = function (data) {
     this.keys = this.game.input.keyboard.addKeys({
