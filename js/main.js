@@ -6,23 +6,49 @@
 // Hero
 //
 
+
+    var temporaria = Math.floor(Math.random() * 2) + 1;
+    console.log(temporaria)
+
+
 function Hero(game, x, y) {
     // call Phaser.Sprite constructor
-    Phaser.Sprite.call(this, game, x, y, 'hero');
+    if(temporaria == 1){
 
-    // anchor
-    this.anchor.set(0.5, 0.5);
-    // physics properties
-    this.game.physics.enable(this);
-    this.body.collideWorldBounds = true;
-    // animations
-    this.animations.add('stop', [0, 1, 2]);
-    this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
-    this.animations.add('right', [ 6, 7, 8], 10, true);
-    // this.animations.add('jump', [3]);
-    // this.animations.add('fall', [4]);
-    this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
-    // starting animation
+        Phaser.Sprite.call(this, game, x, y, 'hero1');
+
+        // anchor
+        this.anchor.set(0.5, 0.5);
+        // physics properties
+        this.game.physics.enable(this);
+        this.body.collideWorldBounds = true;
+        // animations
+        this.animations.add('stop', [0, 1, 2]);
+        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('right', [ 6, 7, 8], 10, true);
+        // this.animations.add('jump', [3]);
+        // this.animations.add('fall', [4]);
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
+        // starting animation
+    }
+    else{
+        Phaser.Sprite.call(this, game, x, y, 'hero2');
+
+        // anchor
+        this.anchor.set(0.5, 0.5);
+        // physics properties
+        this.game.physics.enable(this);
+        this.body.collideWorldBounds = true;
+        // animations
+        this.animations.add('stop', [0, 1, 2]);
+        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('right', [ 6, 7, 8], 10, true);
+        // this.animations.add('jump', [3]);
+        // this.animations.add('fall', [4]);
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
+        // starting animation
+ 
+    }
     this.animations.play('stop');
 }
 
@@ -256,7 +282,11 @@ LoadingState.preload = function () {
     this.game.load.image('bola', 'images/bola.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
-    this.game.load.spritesheet('hero', 'images/wheelchair2.png', 32, 39);
+    // Carregamento do Heroi
+    this.game.load.spritesheet('hero1', 'images/hiro1.png', 32, 39);
+    this.game.load.spritesheet('hero2', 'images/hiro2.png', 32, 36);
+
+
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('darth', 'assets/personagem/darth.png', 32, 36);
@@ -483,7 +513,12 @@ PlayState._loadLevel = function (data) {
     this._spawnDoor(data.door.x, data.door.y);
 
     // enable gravity
-    const GRAVITY = 25200;
+    let GRAVITY = 0
+    if(temporaria == 2){
+        GRAVITY = 500;
+    }else{
+        GRAVITY = 25200;
+    }
     this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
