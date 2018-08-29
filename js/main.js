@@ -228,15 +228,22 @@ LoadingState.preload = function () {
     this.game.load.json('level:5', 'data/level05.json');    
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
+    this.game.load.json('level:1', 'data/level02.json');
     this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('background0', 'assets/inicial.jpg');    
+    //this.game.load.image('background0', 'assets/inicial.jpg');    
     this.game.load.image('background1', 'images/background.png');
+    this.game.load.image('background0', 'images/background2.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
+    this.game.load.image('stone:8x1', 'assets/stone_8x1.png');
+    this.game.load.image('stone:6x1', 'assets/stone_6x1.png');
+    this.game.load.image('stone:4x1', 'assets/stone_4x1.png');
+    this.game.load.image('stone:2x1', 'assets/stone_2x1.png');
+    this.game.load.image('stone:1x1', 'assets/stone_1x1.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
     this.game.load.image('grass:6x1', 'images/grass_6x1.png');
     this.game.load.image('grass:4x1', 'images/grass_4x1.png');
