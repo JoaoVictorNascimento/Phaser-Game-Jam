@@ -1,0 +1,16 @@
+{
+  "name": "phaserQuest",
+  "version": "1.0.0",
+  "description": "Phaser Project Game JAM",
+  "main": "index.js",
+  "scripts": {
+    "start": "node Server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Caio Nakai, João Nacimento, Gabriel Choptian",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "phaser": "^3.11.0"
+  }
+}
