@@ -250,6 +250,7 @@ LoadingState.preload = function () {
     this.game.load.image('grass:2x1', 'images/grass_2x1.png');
     this.game.load.image('grass:1x1', 'images/grass_1x1.png');
     this.game.load.image('key', 'images/key.png');
+    this.game.load.image('bola', 'images/bola.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
     this.game.load.spritesheet('hero', 'images/wheelchair2.png', 32, 39);
@@ -257,6 +258,7 @@ LoadingState.preload = function () {
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('darth', 'assets/personagem/darth.png', 32, 36);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
+    this.game.load.spritesheet('tp', 'images/tp.png', 168, 320);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
     this.game.load.audio('sfx:jump', 'audio/jump.wav');
@@ -301,7 +303,8 @@ PlayState.create = function () {
         coin: this.game.add.audio('sfx:coin'),
         key: this.game.add.audio('sfx:key'),
         stomp: this.game.add.audio('sfx:stomp'),
-        door: this.game.add.audio('sfx:door')
+        door: this.game.add.audio('sfx:door'),
+        tp: this.game.add.audio('sfx:door')
     };
     this.bgm = this.game.add.audio('bgm');
     this.bgm.loopFull();
@@ -347,6 +350,16 @@ PlayState._handleCollisions = function () {
         function (hero, door) {
             return this.hasKey && hero.body.touching.down;
         }, this);
+
+
+    // collision: hero vs Teleport
+    this.game.physics.arcade.overlap(this.hero, this.tp_b, this._onHeroVsTp_b,
+        // ignore if the player is on air
+        function (hero) {
+            return hero.body.touching.down;
+        }, this);
+
+
     // collision: hero vs enemies (kill or die)
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
@@ -408,6 +421,10 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
         enemy.body.touching = enemy.body.wasTouching;
     }
 };
+PlayState._onHeroVsTp_b = function (hero, tp) {
+    // 'open' the door by changing its graphic and playing a sfx
+    hero.reset(this.tp_a.worldPosition.x,this.tp_a.worldPosition.y-30)
+};
 
 PlayState._onHeroVsDoor = function (hero, door) {
     // 'open' the door by changing its graphic and playing a sfx
@@ -452,14 +469,18 @@ PlayState._loadLevel = function (data) {
 
     // spawn platforms
     data.platforms.forEach(this._spawnPlatform, this);
+    if(data.elevador)
+        data.elevador.forEach(this._spawnElevador, this);
 
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
+    if (data.tp)
+        data.tp.forEach(this._spawnTp, this);
     this._spawnKey(data.key.x, data.key.y);
     this._spawnDoor(data.door.x, data.door.y);
 
     // enable gravity
-    const GRAVITY = 1200;
+    const GRAVITY = 25200;
     this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
@@ -488,6 +509,20 @@ PlayState._spawnPlatform = function (platform) {
     // physics for platform sprites
     this.game.physics.enable(sprite);
     sprite.body.allowGravity = false;
+    sprite.body.immovable = true;
+
+    // spawn invisible walls at each side, only detectable by enemies
+    this._spawnEnemyWall(platform.x, platform.y, 'left');
+    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
+};
+
+PlayState._spawnElevador = function (platform) {
+    let sprite = this.platforms.create(
+        platform.x, platform.y, platform.image);
+
+    // physics for platform sprites
+    this.game.physics.enable(sprite);
+    sprite.body.gravity.y = -25205;
     sprite.body.immovable = true;
 
     // spawn invisible walls at each side, only detectable by enemies
@@ -539,6 +574,30 @@ PlayState._spawnDoor = function (x, y) {
     this.door.anchor.setTo(0.5, 1);
     this.game.physics.enable(this.door);
     this.door.body.allowGravity = false;
+};
+PlayState._spawnTp = function (tp) {
+    this.tp_a = this.bgDecoration.create(tp.out.x, tp.out.y, 'tp');
+
+    this.tp_a.scale.setTo(.3,.3);
+
+    this.tp_a.anchor.setTo(0.5, 1);
+    this.game.physics.enable(this.tp_a);
+    this.tp_a.body.allowGravity = false;
+
+    this.tp_a.animations.add('tp_a', [0,1], 10, true);
+    this.tp_a.play('tp_a')
+
+
+    this.tp_b = this.bgDecoration.create(tp.in.x, tp.in.y, 'tp');
+    this.tp_b.anchor.setTo(0.5, 1);
+    this.game.physics.enable(this.tp_b);
+    this.tp_b.body.allowGravity = false;
+
+    this.tp_b.animations.add('tp_b', [2,3], 10, true);
+    this.tp_b.play('tp_b');
+
+    this.tp_b.scale.setTo(.3,.3)
+
 };
 
 PlayState._createHud = function () {
