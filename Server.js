@@ -2,7 +2,7 @@
 //node Server.js
 // Parameters
 
-const port = 80; //Specify a port for our web server
+const port = 3000; //Specify a port for our web server
 const express = require('express'); //load express with the use of requireJs
 var app = express(); //Create an instance of the express library
 app.use(express.static(__dirname + '/'));//Serving static files
