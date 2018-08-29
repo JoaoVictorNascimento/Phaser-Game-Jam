@@ -511,7 +511,7 @@ PlayState._loadLevel = function (data) {
     // enable gravity
     let GRAVITY = 0
     if(temporaria == 2){
-        GRAVITY = 500;
+        GRAVITY = 890;
     }else{
         GRAVITY = 25200;
     }
