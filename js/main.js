@@ -236,6 +236,51 @@ Darth.prototype.die = function () {
 
 
 };
+// caminhao
+function Caminhao(game, x, y) {
+    Phaser.Sprite.call(this, game, x, y, 'caminhao');
+
+    // anchor
+    this.anchor.set(0.5);
+    // animation
+    this.animations.add('esq', [0, 1], 8, true);
+    this.animations.add('dir', [1, 0], 8, true);
+    this.animations.add('die', [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], 12);
+    this.animations.play('dir');
+
+    // physic properties
+    this.game.physics.enable(this);
+    //this.body.collideWorldBounds = true;
+    this.body.velocity.x = -Caminhao.SPEED;
+}
+
+Caminhao.SPEED = 100;
+
+// inherit from Phaser.Sprite
+Caminhao.prototype = Object.create(Phaser.Sprite.prototype);
+Caminhao.prototype.constructor = Caminhao;
+
+Caminhao.prototype.update = function () {
+    // check against walls and reverse direction if necessary
+    if (this.body.touching.right || this.body.blocked.right) {
+        this.body.velocity.x = -Caminhao.SPEED; // turn left
+    this.animations.play('esq');
+
+    }
+    else if (this.body.touching.left || this.body.blocked.left) {
+        this.body.velocity.x = Caminhao.SPEED; // turn right
+    this.animations.play('dir');
+
+    }
+};
+
+Caminhao.prototype.die = function () {
+    this.body.enable = false;
+
+    this.kill();
+
+
+};
 
 
 // =============================================================================
@@ -282,6 +327,7 @@ LoadingState.preload = function () {
     this.game.load.image('bola', 'images/bola.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
+    this.game.load.spritesheet('caminhao', 'images/aa.png', 100, 70);
     // Carregamento do Heroi
     this.game.load.spritesheet('hero1', 'images/hiro1.png', 32, 39);
     this.game.load.spritesheet('hero2', 'images/hiro2.png', 32, 36);
@@ -369,6 +415,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
     this.game.physics.arcade.collide(this.darths, this.platforms);
     this.game.physics.arcade.collide(this.darths, this.enemyWalls);
+    this.game.physics.arcade.collide(this.caminhoes, this.platforms);
+    // this.game.physics.arcade.collide(this.caminhoes, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
 
     // hero vs coins (pick up)
@@ -397,6 +445,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.darths,
+        this._onHeroVsEnemy, null, this);
+    this.game.physics.arcade.overlap(this.hero, this.caminhoes,
         this._onHeroVsEnemy, null, this);
 };
 
@@ -488,12 +538,14 @@ PlayState._loadLevel = function (data) {
     this.coins = this.game.add.group();
     this.spiders = this.game.add.group();
     this.darths = this.game.add.group();
+    this.caminhoes = this.game.add.group();
     this.enemyWalls = this.game.add.group();
     this.enemyWalls.visible = false;
 
     // spawn hero and enemies
 
-    this._spawnCharacters({hero: data.hero, spiders: data.spiders?data.spiders:[], darths: data.darths?data.darths:[]});
+    this._spawnCharacters({hero: data.hero, spiders: data.spiders?data.spiders:[], darths: data.darths?data.darths:[],
+    caminhoes: data.caminhoes?data.caminhoes:[]});
 
     // spawn level decoration
     data.decoration.forEach(function (deco) {
@@ -536,6 +588,12 @@ PlayState._spawnCharacters = function (data) {
     data.darths.forEach(function (darth) {
         let sprite = new Darth(this.game, darth.x, darth.y);
         this.darths.add(sprite);
+    }, this);
+
+    // spawn caminhao
+    data.caminhoes.forEach(function (caminhao) {
+        let sprite = new Caminhao(this.game, caminhao.x, caminhao.y);
+        this.caminhoes.add(sprite);
     }, this);
 
     // spawn hero
