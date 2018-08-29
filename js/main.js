@@ -236,6 +236,55 @@ Darth.prototype.die = function () {
 
 
 };
+
+// general
+
+
+function General(game, x, y) {
+    Phaser.Sprite.call(this, game, x, y, 'general');
+
+    // anchor
+    this.anchor.set(0.5);
+    // animation
+    this.animations.add('esq', [3, 4], 8, true);
+    this.animations.add('dir', [7, 8], 8, true);
+    this.animations.add('die', [4, 7, 4, 7, 4, 7, 4, 7, 4, 7, 4, 7], 12);
+    this.animations.play('dir');
+
+    // physic properties
+    this.game.physics.enable(this);
+    this.body.collideWorldBounds = true;
+    this.body.velocity.x = General.SPEED;
+}
+
+General.SPEED = 200;
+
+// inherit from Phaser.Sprite
+General.prototype = Object.create(Phaser.Sprite.prototype);
+General.prototype.constructor = General;
+
+General.prototype.update = function () {
+    // check against walls and reverse direction if necessary
+    if (this.body.touching.right || this.body.blocked.right) {
+        this.body.velocity.x = -General.SPEED; // turn left
+    this.animations.play('esq');
+
+    }
+    else if (this.body.touching.left || this.body.blocked.left) {
+        this.body.velocity.x = General.SPEED; // turn right
+    this.animations.play('dir');
+
+    }
+};
+
+General.prototype.die = function () {
+    this.body.enable = false;
+
+    this.kill();
+
+
+};
+
 // caminhao
 function Caminhao(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'caminhao');
@@ -340,6 +389,7 @@ LoadingState.preload = function () {
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('protese', 'images/protese.png', 42, 32);
     this.game.load.spritesheet('darth', 'assets/personagem/darth.png', 32, 36);
+    this.game.load.spritesheet('general', 'assets/personagem/general.png', 32, 36);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('tp', 'images/tp.png', 168, 320);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
@@ -423,6 +473,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
     this.game.physics.arcade.collide(this.darths, this.platforms);
     this.game.physics.arcade.collide(this.darths, this.enemyWalls);
+    this.game.physics.arcade.collide(this.generais, this.platforms);
+    this.game.physics.arcade.collide(this.generais, this.enemyWalls);
     this.game.physics.arcade.collide(this.caminhoes, this.platforms);
     // this.game.physics.arcade.collide(this.caminhoes, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
@@ -443,7 +495,6 @@ PlayState._handleCollisions = function () {
 
     // collision: hero vs Teleport
     for(let i=0;i<this.tp_b.length;i++){
-        console.log(i)
         this.game.physics.arcade.overlap(this.hero, this.tp_b[i], (hero,tp)=>{ this._onHeroVsTp_b(hero,tp,i)},
             // ignore if the player is on air
             function (hero) {
@@ -459,6 +510,8 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.overlap(this.hero, this.darths,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.caminhoes,
+        this._onHeroVsEnemy, null, this);
+    this.game.physics.arcade.overlap(this.hero, this.generais,
         this._onHeroVsEnemy, null, this);
 };
 
@@ -562,6 +615,7 @@ PlayState._loadLevel = function (data) {
     this.coins = this.game.add.group();
     this.spiders = this.game.add.group();
     this.darths = this.game.add.group();
+    this.generais = this.game.add.group();
     this.caminhoes = this.game.add.group();
     this.enemyWalls = this.game.add.group();
     this.enemyWalls.visible = false;
@@ -569,7 +623,7 @@ PlayState._loadLevel = function (data) {
     // spawn hero and enemies
 
     this._spawnCharacters({hero: data.hero, spiders: data.spiders?data.spiders:[], darths: data.darths?data.darths:[],
-    caminhoes: data.caminhoes?data.caminhoes:[]});
+    caminhoes: data.caminhoes?data.caminhoes:[],generais: data.generais?data.generais:[]});
 
     // spawn level decoration
     if(data.decoration)
@@ -621,6 +675,12 @@ PlayState._spawnCharacters = function (data) {
     data.darths.forEach(function (darth) {
         let sprite = new Darth(this.game, darth.x, darth.y);
         this.darths.add(sprite);
+    }, this);
+
+    // spawn generais
+    data.generais.forEach(function (general) {
+        let sprite = new General(this.game, general.x, general.y);
+        this.generais.add(sprite);
     }, this);
 
     // spawn caminhao
