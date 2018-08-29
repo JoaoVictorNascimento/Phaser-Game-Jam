@@ -296,11 +296,11 @@ LoadingState.init = function () {
 
 LoadingState.preload = function () {
 
-    this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level01.json');
-    this.game.load.json('level:2', 'data/level00.json');
+    // this.game.load.json('level:5', 'data/level05.json');
+    this.game.load.json('level:0', 'data/level00.json');
+    this.game.load.json('level:2', 'data/level03.json');
     this.game.load.json('level:1', 'data/level02.json');
-    this.game.load.json('level:4', 'data/level03.json');
+    this.game.load.json('level:4', 'data/level01.json');
     this.game.load.json('level:3', 'data/level04.json');
     this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
@@ -661,7 +661,7 @@ PlayState._spawnFire = function (platform) {
     // physics for platform sprites
     this.game.physics.enable(sprite);
     if(temporaria == 2){
-        sprite.body.gravity.y = -1000;
+        sprite.body.gravity.y = -1500;
     }else{
         sprite.body.gravity.y = -25205;
     }
