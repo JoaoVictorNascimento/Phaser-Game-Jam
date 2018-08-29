@@ -296,13 +296,13 @@ LoadingState.init = function () {
 
 LoadingState.preload = function () {
 
-    // this.game.load.json('level:5', 'data/level05.json');
+    this.game.load.json('level:5', 'data/level05.json');
     this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:2', 'data/level03.json');
+    this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level01.json');
     this.game.load.json('level:3', 'data/level04.json');
-    this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.json('level:100', 'data/Game_Over.json');
 
     this.game.load.image('font:numbers', 'images/numbers.png');
 
@@ -313,6 +313,7 @@ LoadingState.preload = function () {
     this.game.load.image('background2', 'images/background2.png');
     this.game.load.image('background3', 'images/background.png');
     this.game.load.image('background4', 'images/background.png');
+    this.game.load.image('background100', 'images/Game_Over.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
@@ -372,7 +373,10 @@ PlayState.init = function (data) {
     });
 
     this.hasKey = false;
-    this.level = (data.level || 0) % LEVEL_COUNT;
+    if(data.level !== 100)
+        this.level = (data.level || 0) % LEVEL_COUNT;
+    else
+        this.level=100;
 };
 
 PlayState.create = function () {
@@ -506,7 +510,7 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
     }
     else { // game over -> play dying animation and restart the game
         this.life-=1;
-        if(this.life<0){
+        if(this.life === 0){
             this.level = 100
         }
         hero.die();
@@ -530,7 +534,10 @@ PlayState._onHeroVsDoor = function (hero, door) {
     // 'open' the door by changing its graphic and playing a sfx
     door.frame = 1;
     this.sfx.door.play();
-
+    if(this.level === 100){
+        this.life = 3;
+        this.coinPickupCount= 0;
+    }
     // play 'enter door' animation and change to the next level when it ends
     hero.freeze();
     this.game.add.tween(hero)
@@ -565,6 +572,7 @@ PlayState._loadLevel = function (data) {
     caminhoes: data.caminhoes?data.caminhoes:[]});
 
     // spawn level decoration
+    if(data.decoration)
     data.decoration.forEach(function (deco) {
         this.bgDecoration.add(
             this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
