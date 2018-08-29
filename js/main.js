@@ -21,7 +21,7 @@ function Hero(game, x, y) {
     this.animations.add('right', [ 6, 7, 8], 10, true);
     // this.animations.add('jump', [3]);
     // this.animations.add('fall', [4]);
-    this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 12); // 12fps no loop
+    this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
     // starting animation
     this.animations.play('stop');
 }
@@ -45,6 +45,7 @@ Hero.prototype.move = function (direction) {
         this.scale.x = 1;
     }
 };
+
 
 Hero.prototype.jump = function () {
     const JUMP_SPEED = 400;
@@ -102,13 +103,13 @@ Hero.prototype._getAnimationName = function () {
     else if (this.isFrozen) {
         name = 'stop';
     }
-    // jumping
-    else if (this.body.velocity.y < 0 && this.body.velocity.x < 0) {
-        name = 'right';
-    }
-    else if (this.body.velocity.y < 0 && this.body.velocity.x > 0) {
-        name = 'left';
-    }
+    // jumping right
+    // else if (this.body.velocity.y < 0 && this.body.velocity.x >= 0) {
+    //     name = 'right';
+    // }
+    // else if (this.body.velocity.y < 0 && !this.body.velocity.x >= 0) {
+    //     name = 'left';
+    // }
     // falling
     else if (this.body.velocity.y >= 0) {
         name = 'right';
@@ -161,6 +162,51 @@ Spider.prototype.die = function () {
     }, this);
 };
 
+//
+// Darth Vader (enemy)
+//
+
+function Darth(game, x, y) {
+    Phaser.Sprite.call(this, game, x, y, 'darth');
+
+    // anchor
+    this.anchor.set(0.5);
+    // animation
+    this.animations.add('esq', [0, 1, 2], 8, true);
+    this.animations.add('die', [0, 4, 0, 4, 0, 4, 3, 3, 3, 3, 3, 3], 12);
+    this.animations.play('esq');
+
+    // physic properties
+    this.game.physics.enable(this);
+    this.body.collideWorldBounds = true;
+    this.body.velocity.x = Darth.SPEED;
+}
+
+Darth.SPEED = 100;
+
+// inherit from Phaser.Sprite
+Darth.prototype = Object.create(Phaser.Sprite.prototype);
+Darth.prototype.constructor = Darth;
+
+Darth.prototype.update = function () {
+    // check against walls and reverse direction if necessary
+    if (this.body.touching.right || this.body.blocked.right) {
+        this.body.velocity.x = -Darth.SPEED; // turn left
+    }
+    else if (this.body.touching.left || this.body.blocked.left) {
+        this.body.velocity.x = Darth.SPEED; // turn right
+    }
+};
+
+Darth.prototype.die = function () {
+    this.body.enable = false;
+
+    this.animations.play('die').onComplete.addOnce(function () {
+        this.kill();
+    }, this);
+};
+
+
 // =============================================================================
 // Loading state
 // =============================================================================
@@ -173,6 +219,8 @@ LoadingState.init = function () {
 };
 
 LoadingState.preload = function () {
+
+    this.game.load.json('level:5', 'data/level05.json');    
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
 
