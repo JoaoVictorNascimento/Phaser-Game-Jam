@@ -243,6 +243,7 @@ LoadingState.preload = function () {
     this.game.load.image('grass:2x1', 'images/grass_2x1.png');
     this.game.load.image('grass:1x1', 'images/grass_1x1.png');
     this.game.load.image('key', 'images/key.png');
+    this.game.load.image('bola', 'images/bola.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
     this.game.load.spritesheet('hero', 'images/wheelchair2.png', 32, 39);
@@ -445,6 +446,7 @@ PlayState._loadLevel = function (data) {
 
     // spawn platforms
     data.platforms.forEach(this._spawnPlatform, this);
+    data.elevador.forEach(this._spawnElevador, this);
 
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
@@ -452,7 +454,7 @@ PlayState._loadLevel = function (data) {
     this._spawnDoor(data.door.x, data.door.y);
 
     // enable gravity
-    const GRAVITY = 1200;
+    const GRAVITY = 25200;
     this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
@@ -481,6 +483,20 @@ PlayState._spawnPlatform = function (platform) {
     // physics for platform sprites
     this.game.physics.enable(sprite);
     sprite.body.allowGravity = false;
+    sprite.body.immovable = true;
+
+    // spawn invisible walls at each side, only detectable by enemies
+    this._spawnEnemyWall(platform.x, platform.y, 'left');
+    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
+};
+
+PlayState._spawnElevador = function (platform) {
+    let sprite = this.platforms.create(
+        platform.x, platform.y, platform.image);
+
+    // physics for platform sprites
+    this.game.physics.enable(sprite);
+    sprite.body.gravity.y = -25205;
     sprite.body.immovable = true;
 
     // spawn invisible walls at each side, only detectable by enemies
