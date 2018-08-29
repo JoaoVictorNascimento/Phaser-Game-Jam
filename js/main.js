@@ -243,8 +243,8 @@ function Caminhao(game, x, y) {
     // anchor
     this.anchor.set(0.5);
     // animation
-    this.animations.add('esq', [0, 1], 8, true);
-    this.animations.add('dir', [1, 0], 8, true);
+    this.animations.add('esq', [0, 1], 1, true);
+    this.animations.add('dir', [1, 0], 1, true);
     this.animations.add('die', [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], 12);
     this.animations.play('dir');
 
@@ -254,7 +254,7 @@ function Caminhao(game, x, y) {
     this.body.velocity.x = -Caminhao.SPEED;
 }
 
-Caminhao.SPEED = 100;
+Caminhao.SPEED = 40;
 
 // inherit from Phaser.Sprite
 Caminhao.prototype = Object.create(Phaser.Sprite.prototype);
@@ -297,7 +297,7 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level02.json');
+    this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:2', 'data/level04.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level03.json');
@@ -328,7 +328,7 @@ LoadingState.preload = function () {
     this.game.load.image('bola', 'images/bola.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
-    this.game.load.spritesheet('caminhao', 'images/aa.png', 100, 70);
+    this.game.load.spritesheet('caminhao', 'images/aa.png', 101, 70);
     // Carregamento do Heroi
     this.game.load.spritesheet('hero1', 'images/hiro1.png', 32, 39);
     this.game.load.spritesheet('hero2', 'images/hiro2.png', 32, 36);
@@ -576,9 +576,10 @@ PlayState._loadLevel = function (data) {
 
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
-    if (data.tp){
-        this.tp_a=[];
+            this.tp_a=[];
         this.tp_b=[];
+    if (data.tp){
+
         for(let i=0;i< data.tp.length;i++){
             this._spawnTp(data.tp[i],i)
         }
