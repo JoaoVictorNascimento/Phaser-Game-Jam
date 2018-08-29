@@ -307,7 +307,7 @@ LoadingState.preload = function () {
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('icon:life', 'images/coin_life.png');
+    this.game.load.image('icon:life', 'assets/life.png');
     this.game.load.image('background0', 'assets/inicial.jpg');
     this.game.load.image('background1', 'images/background.png');
     this.game.load.image('background2', 'images/background2.png');
@@ -651,6 +651,24 @@ PlayState._spawnElevador = function (platform) {
     this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
 };
 
+PlayState._spawnFire = function (platform) {
+    let sprite = this.platforms.create(
+        platform.x, platform.y, platform.image);
+
+    // physics for platform sprites
+    this.game.physics.enable(sprite);
+    if(temporaria == 2){
+        sprite.body.gravity.y = -700;
+    }else{
+        sprite.body.gravity.y = -25205;
+    }
+    sprite.body.immovable = true;
+
+    // spawn invisible walls at each side, only detectable by enemies
+    this._spawnEnemyWall(platform.x, platform.y, 'left');
+    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
+};
+
 PlayState._spawnEnemyWall = function (x, y, side) {
     let sprite = this.enemyWalls.create(x, y, 'invisible-wall');
     // anchor and y displacement
@@ -735,7 +753,7 @@ PlayState._createHud = function () {
 
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
     let lifeIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:life');
-
+    lifeIcon.scale.setTo(.7,.7)
     let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
         coinIcon.height / 2, this.coinFont);
     coinScoreImg.anchor.set(0, 0.5);
