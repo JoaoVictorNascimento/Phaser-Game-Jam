@@ -310,7 +310,7 @@ LoadingState.create = function () {
 // Play state
 // =============================================================================
 
-PlayState = {};
+PlayState = {coinPickupCount:0};
 
 const LEVEL_COUNT = 5;
 
@@ -321,7 +321,6 @@ PlayState.init = function (data) {
         up: Phaser.KeyCode.UP
     });
 
-    this.coinPickupCount = 0;
     this.hasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
