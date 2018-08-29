@@ -297,11 +297,11 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:2', 'data/level04.json');
+    this.game.load.json('level:0', 'data/level01.json');
+    this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level03.json');
-    this.game.load.json('level:3', 'data/level01.json');
+    this.game.load.json('level:3', 'data/level04.json');
     this.game.load.tilemap('mapa', 'assets/mapa.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.game.load.image('font:numbers', 'images/numbers.png');
@@ -326,6 +326,7 @@ LoadingState.preload = function () {
     this.game.load.image('stone:1x1', 'assets/stone_1x1.png');
     this.game.load.image('key', 'images/key.png');
     this.game.load.image('bola', 'images/bola.png');
+    this.game.load.image('fire', 'assets/fire2.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
     this.game.load.spritesheet('caminhao', 'images/aa.png', 101, 70);
@@ -573,6 +574,8 @@ PlayState._loadLevel = function (data) {
     data.platforms.forEach(this._spawnPlatform, this);
     if(data.elevador)
         data.elevador.forEach(this._spawnElevador, this);
+    if(data.fire)
+        data.fire.forEach(this._spawnFire, this);
 
     // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
@@ -658,7 +661,7 @@ PlayState._spawnFire = function (platform) {
     // physics for platform sprites
     this.game.physics.enable(sprite);
     if(temporaria == 2){
-        sprite.body.gravity.y = -700;
+        sprite.body.gravity.y = -1000;
     }else{
         sprite.body.gravity.y = -25205;
     }
