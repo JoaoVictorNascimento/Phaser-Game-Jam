@@ -298,6 +298,7 @@ LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
     this.game.load.json('level:0', 'data/level00.json');
+    this.game.load.json('level:100', 'data/Game_Over.json');
     this.game.load.json('level:2', 'data/level04.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level03.json');
@@ -313,6 +314,7 @@ LoadingState.preload = function () {
     this.game.load.image('background2', 'images/background2.png');
     this.game.load.image('background3', 'images/background.png');
     this.game.load.image('background4', 'images/background.png');
+    this.game.load.image('background100', 'images/Game_Over.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
@@ -358,7 +360,7 @@ LoadingState.create = function () {
 // Play state
 // =============================================================================
 
-PlayState = {coinPickupCount:0, life: 3};
+PlayState = {coinPickupCount:0, life: 3, level:100};
 
 const LEVEL_COUNT = 5;
 const LIFE = 50;
@@ -371,7 +373,10 @@ PlayState.init = function (data) {
     });
 
     this.hasKey = false;
-    this.level = (data.level || 0) % LEVEL_COUNT;
+    if(data.level !== 100)
+        this.level = (data.level || 0) % LEVEL_COUNT;
+    else
+        this.level = 100
 };
 
 PlayState.create = function () {
@@ -505,8 +510,9 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
     }
     else { // game over -> play dying animation and restart the game
         this.life-=1;
-        if(this.life<0){
+        if(this.life<=0){
             this.level = 100
+            console.log(this.life,this.level)
         }
         hero.die();
         this.sfx.stomp.play();
@@ -529,7 +535,10 @@ PlayState._onHeroVsDoor = function (hero, door) {
     // 'open' the door by changing its graphic and playing a sfx
     door.frame = 1;
     this.sfx.door.play();
-
+    if(this.level === 100){
+        this.coinPickupCount = 0;
+        this.life = 3;
+    }
     // play 'enter door' animation and change to the next level when it ends
     hero.freeze();
     this.game.add.tween(hero)
@@ -564,20 +573,25 @@ PlayState._loadLevel = function (data) {
     caminhoes: data.caminhoes?data.caminhoes:[]});
 
     // spawn level decoration
-    data.decoration.forEach(function (deco) {
-        this.bgDecoration.add(
-            this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
-    }, this);
+    if(data.decoration)
+        data.decoration.forEach(function (deco) {
+            this.bgDecoration.add(
+                this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
+        }, this);
 
     // spawn platforms
-    data.platforms.forEach(this._spawnPlatform, this);
-    if(data.elevador)
-        data.elevador.forEach(this._spawnElevador, this);
+    if(data.platforms)
+        data.platforms.forEach(this._spawnPlatform, this);
+        if(data.elevador)
+            data.elevador.forEach(this._spawnElevador, this);
 
     // spawn important objects
-    data.coins.forEach(this._spawnCoin, this);
-            this.tp_a=[];
-        this.tp_b=[];
+    if(data.coins)
+        data.coins.forEach(this._spawnCoin, this);
+
+    this.tp_a=[];
+    this.tp_b=[];
+
     if (data.tp){
 
         for(let i=0;i< data.tp.length;i++){
@@ -601,26 +615,31 @@ PlayState._loadLevel = function (data) {
 
 PlayState._spawnCharacters = function (data) {
     // spawn spiders
+    if(data.spiders)
     data.spiders.forEach(function (spider) {
         let sprite = new Spider(this.game, spider.x, spider.y);
         this.spiders.add(sprite);
     }, this);
 
     // spawn darths
+    if(data.darths)
     data.darths.forEach(function (darth) {
         let sprite = new Darth(this.game, darth.x, darth.y);
         this.darths.add(sprite);
     }, this);
 
     // spawn caminhao
+    if(data.caminhoes)
     data.caminhoes.forEach(function (caminhao) {
         let sprite = new Caminhao(this.game, caminhao.x, caminhao.y);
         this.caminhoes.add(sprite);
     }, this);
 
     // spawn hero
-    this.hero = new Hero(this.game, data.hero.x, data.hero.y);
-    this.game.add.existing(this.hero);
+    if(data.hero){
+        this.hero = new Hero(this.game, data.hero.x, data.hero.y);
+        this.game.add.existing(this.hero);
+    }
 };
 
 PlayState._spawnPlatform = function (platform) {
