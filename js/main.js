@@ -16,10 +16,11 @@ function Hero(game, x, y) {
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
     // animations
-    this.animations.add('stop', [0]);
-    this.animations.add('run', [1, 2], 8, true); // 8fps looped
-    this.animations.add('jump', [3]);
-    this.animations.add('fall', [4]);
+    this.animations.add('stop', [0, 1, 2]);
+    this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+    this.animations.add('right', [ 6, 7, 8], 10, true);
+    // this.animations.add('jump', [3]);
+    // this.animations.add('fall', [4]);
     this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 12); // 12fps no loop
     // starting animation
     this.animations.play('stop');
@@ -102,15 +103,15 @@ Hero.prototype._getAnimationName = function () {
         name = 'stop';
     }
     // jumping
-    else if (this.body.velocity.y < 0) {
-        name = 'jump';
+    else if (this.body.velocity.y < 0 && this.body.velocity.x < 0) {
+        name = 'right';
+    }
+    else if (this.body.velocity.y < 0 && this.body.velocity.x > 0) {
+        name = 'left';
     }
     // falling
-    else if (this.body.velocity.y >= 0 && !this.body.touching.down) {
-        name = 'fall';
-    }
-    else if (this.body.velocity.x !== 0 && this.body.touching.down) {
-        name = 'run';
+    else if (this.body.velocity.y >= 0) {
+        name = 'right';
     }
 
     return name;
@@ -189,7 +190,7 @@ LoadingState.preload = function () {
     this.game.load.image('key', 'images/key.png');
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
-    this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
+    this.game.load.spritesheet('hero', 'images/wheelchair2.png', 32, 39);
     this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
     this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
@@ -262,6 +263,7 @@ PlayState.update = function () {
 PlayState.shutdown = function () {
     this.bgm.stop();
 };
+
 
 PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.spiders, this.platforms);
