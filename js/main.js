@@ -234,9 +234,9 @@ LoadingState.preload = function () {
     this.game.load.image('font:numbers', 'images/numbers.png');
 
     this.game.load.image('icon:coin', 'images/coin_icon.png');
-    //this.game.load.image('background0', 'assets/inicial.jpg');    
+    this.game.load.image('background0', 'assets/inicial.jpg');    
     this.game.load.image('background1', 'images/background.png');
-    this.game.load.image('background0', 'images/background2.png');
+    this.game.load.image('background4', 'images/background2.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('stone:8x1', 'assets/stone_8x1.png');
