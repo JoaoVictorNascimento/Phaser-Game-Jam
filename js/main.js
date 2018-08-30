@@ -287,8 +287,8 @@ LoadingState.init = function () {
 
 LoadingState.preload = function () {
 
-    this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level01.json');
+    this.game.load.json('level:5', 'data/level01.json');
+    this.game.load.json('level:0', 'data/level05.json');
     this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level03.json');
@@ -304,7 +304,7 @@ LoadingState.preload = function () {
     this.game.load.image('background2', 'images/background2.png');
     this.game.load.image('background3', 'images/background.png');
     this.game.load.image('background4', 'images/background.png');
-    this.game.load.image('background4', 'images/background5.png');
+    this.game.load.image('background5', 'images/background5.png');
     this.game.load.image('background100', 'images/Game_Over.png');
 
     this.game.load.image('blackPage', 'images/black.png');
