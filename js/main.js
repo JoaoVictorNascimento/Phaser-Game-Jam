@@ -304,6 +304,7 @@ LoadingState.preload = function () {
     this.game.load.image('background2', 'images/background2.png');
     this.game.load.image('background3', 'images/background.png');
     this.game.load.image('background4', 'images/background.png');
+    this.game.load.image('background4', 'images/background5.png');
     this.game.load.image('background100', 'images/Game_Over.png');
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
