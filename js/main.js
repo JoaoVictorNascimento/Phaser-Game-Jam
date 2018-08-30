@@ -288,10 +288,10 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level03.json');
+    this.game.load.json('level:0', 'data/level01.json');
     this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
-    this.game.load.json('level:4', 'data/level01.json');
+    this.game.load.json('level:4', 'data/level03.json');
     this.game.load.json('level:3', 'data/level04.json');
     this.game.load.json('level:100', 'data/Game_Over.json');
 
