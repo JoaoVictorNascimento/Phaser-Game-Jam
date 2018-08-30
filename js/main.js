@@ -417,12 +417,6 @@ PlayState._handleCollisions = function () {
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
         null, this);
-<<<<<<< HEAD
-    this.game.physics.arcade.overlap(this.hero, this.fire, this._onHeroVsFire,
-        null, this);
-    // hero vs door (end level)
-=======
->>>>>>> 1db59ea3bbea1223f926e7518a4737149fa5012e
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
         function (hero, door) {
             return this.hasKey && hero.body.touching.down;
