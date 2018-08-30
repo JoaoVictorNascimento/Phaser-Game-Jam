@@ -288,7 +288,7 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level00.json');
+    this.game.load.json('level:0', 'data/level03.json');
     this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
     this.game.load.json('level:4', 'data/level01.json');
@@ -410,11 +410,19 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.generais, this.enemyWalls);
     this.game.physics.arcade.collide(this.caminhoes, this.platforms);
     this.game.physics.arcade.collide(this.hero, this.platforms);
+    this.game.physics.arcade.collide(this.hero, this.fire);
+
 
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
         null, this);
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
         null, this);
+<<<<<<< HEAD
+    this.game.physics.arcade.overlap(this.hero, this.fire, this._onHeroVsFire,
+        null, this);
+    // hero vs door (end level)
+=======
+>>>>>>> 1db59ea3bbea1223f926e7518a4737149fa5012e
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
         function (hero, door) {
             return this.hasKey && hero.body.touching.down;
@@ -464,6 +472,11 @@ PlayState._handleInput = function () {
 PlayState._onHeroVsKey = function (hero, key) {
     this.sfx.key.play();
     key.kill();
+    this.hasKey = true;
+};
+
+PlayState._onHeroVsFire = function (hero, fire) {
+    hero.kill();
     this.hasKey = true;
 };
 
@@ -633,6 +646,7 @@ PlayState._spawnFire = function (platform) {
         sprite.body.gravity.y = -25205;
     }
     sprite.body.immovable = true;
+    sprite.scale.setTo(3.5,3.5)
 
     this._spawnEnemyWall(platform.x, platform.y, 'left');
     this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
