@@ -305,6 +305,9 @@ LoadingState.preload = function () {
     this.game.load.image('background3', 'images/background.png');
     this.game.load.image('background4', 'images/background.png');
     this.game.load.image('background100', 'images/Game_Over.png');
+
+    this.game.load.image('blackPage', 'images/black.png');
+
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
     this.game.load.image('grass:8x1', 'images/grass_8x1.png');
@@ -723,8 +726,10 @@ PlayState._createHud = function () {
     this.keyIcon.anchor.set(0, 0.5);
 
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
+
     let lifeIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:life');
     lifeIcon.scale.setTo(.7,.7)
+
     let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
         coinIcon.height / 2, this.coinFont);
     coinScoreImg.anchor.set(0, 0.5);
@@ -744,6 +749,14 @@ PlayState._createHud = function () {
     this.hudlife.add(lifeScoreImg)
     this.hudlife.position.set(130, 10);
 
+    if(temporaria > 2) {
+        let blackPage = this.game.make.image(0, 0, 'blackPage');
+        lifeIcon.scale.setTo(.7, .7)
+
+        this.hudblack = this.game.add.group()
+        this.hudblack.add(blackPage)
+        this.hudlife.position.set(0, 0);
+    }
 };
 
 
