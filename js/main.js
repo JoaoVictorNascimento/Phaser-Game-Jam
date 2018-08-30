@@ -310,6 +310,7 @@ LoadingState.preload = function () {
     this.game.load.image('blackPage', 'images/black.png');
     this.game.load.image('whitePage', 'images/white.png');
     this.game.load.image('blackPage2', 'images/black2.png');
+    this.game.load.image('blackPage3', 'images/black3.png');
 
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
@@ -340,6 +341,7 @@ LoadingState.preload = function () {
     this.game.load.spritesheet('general', 'assets/personagem/general.png', 32, 36);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('tp', 'images/tp.png', 168, 320);
+    this.game.load.spritesheet('tp2', 'images/tp2.png', 168, 320);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
 };
@@ -354,11 +356,30 @@ const LEVEL_COUNT = 5;
 const LIFE = 50;
 
 PlayState.init = function (data) {
-    this.keys = this.game.input.keyboard.addKeys({
+    if(temporaria == 2){
+        if(this.dead === 1){
+        this.keys = this.game.input.keyboard.addKeys({
+            right: Phaser.KeyCode.LEFT,
+            up: Phaser.KeyCode.RIGHT,
+            left: Phaser.KeyCode.UP
+        });
+        }
+        else{
+        this.keys = this.game.input.keyboard.addKeys({
+            right: Phaser.KeyCode.LEFT,
+            left: Phaser.KeyCode.RIGHT,
+            up: Phaser.KeyCode.UP
+        });
+        }
+        
+    }
+    else{
+        this.keys = this.game.input.keyboard.addKeys({
         left: Phaser.KeyCode.LEFT,
         right: Phaser.KeyCode.RIGHT,
         up: Phaser.KeyCode.UP
     });
+    }
 
     this.hasKey = false;
     if(data.level !== 100)
@@ -690,8 +711,10 @@ PlayState._spawnDoor = function (x, y) {
 };
 PlayState._spawnTp = function (tp, i) {
     this.tp_a.push({});
-    this.tp_a[i] = this.bgDecoration.create(tp.out.x, tp.out.y, 'tp');
-
+    if(temporaria === 2)
+        this.tp_a[i] = this.bgDecoration.create(tp.out.x, tp.out.y, 'tp2');
+    else
+        this.tp_a[i] = this.bgDecoration.create(tp.out.x, tp.out.y, 'tp');
     this.tp_a[i].scale.setTo(.3,.3);
 
     this.tp_a[i].anchor.setTo(0.5, 1);
@@ -703,7 +726,11 @@ PlayState._spawnTp = function (tp, i) {
 
 
     this.tp_b.push({});
-    this.tp_b[i] = this.bgDecoration.create(tp.in.x, tp.in.y, 'tp');
+    if(temporaria === 2)
+        this.tp_b[i] = this.bgDecoration.create(tp.in.x, tp.in.y, 'tp2');
+    else
+        this.tp_b[i] = this.bgDecoration.create(tp.in.x, tp.in.y, 'tp');
+    
     this.tp_b[i].anchor.setTo(0.5, 1);
     this.game.physics.enable(this.tp_b[i]);
     this.tp_b[i].body.allowGravity = false;
@@ -758,6 +785,15 @@ PlayState._createHud = function () {
         else
             blackPage = this.game.make.image(0, 0, 'whitePage');
 
+        lifeIcon.scale.setTo(.7, .7)
+
+        this.hudblack = this.game.add.group()
+        this.hudblack.add(blackPage)
+        this.hudlife.position.set(0, 0);
+    }
+    else if(temporaria === 2){
+        
+        let blackPage = this.game.make.image(0, 0, 'blackPage3');
         lifeIcon.scale.setTo(.7, .7)
 
         this.hudblack = this.game.add.group()
