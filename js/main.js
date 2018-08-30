@@ -1,86 +1,58 @@
-// =============================================================================
-// Sprites
-// =============================================================================
-
-//
-// Hero
-//
-
 
     var temporaria = Math.floor(Math.random() * 3) + 1;
     console.log(temporaria)
 
 
 function Hero(game, x, y) {
-    // call Phaser.Sprite constructor
     if(temporaria == 1){
 
         Phaser.Sprite.call(this, game, x, y, 'hero1');
 
-        // anchor
         this.anchor.set(0.5, 0.5);
-        // physics properties
         this.game.physics.enable(this);
         this.body.collideWorldBounds = true;
-        // animations
         this.animations.add('stop', [0, 1, 2]);
-        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('left', [3, 4, 5], 10, true); 
         this.animations.add('right', [ 6, 7, 8], 10, true);
-        // this.animations.add('jump', [3]);
-        // this.animations.add('fall', [4]);
-        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
-        // starting animation
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); 
     }
     else if(temporaria == 2){
         Phaser.Sprite.call(this, game, x, y, 'hero2');
 
-        // anchor
         this.anchor.set(0.5, 0.5);
-        // physics properties
         this.game.physics.enable(this);
         this.body.collideWorldBounds = true;
-        // animations
         this.animations.add('stop', [0, 1, 2]);
-        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('left', [3, 4, 5], 10, true); 
         this.animations.add('right', [ 6, 7, 8], 10, true);
-        // this.animations.add('jump', [3]);
-        // this.animations.add('fall', [4]);
-        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
-        // starting animation
+
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); 
  
     }
     else{
         Phaser.Sprite.call(this, game, x, y, 'hero3');
 
-        // anchor
         this.anchor.set(0.5, 0.5);
-        // physics properties
         this.game.physics.enable(this);
         this.body.collideWorldBounds = true;
-        // animations
         this.animations.add('stop', [0, 1, 2]);
-        this.animations.add('left', [3, 4, 5], 10, true); // 8fps looped
+        this.animations.add('left', [3, 4, 5], 10, true); 
         this.animations.add('right', [ 6, 7, 8], 10, true);
-        // this.animations.add('jump', [3]);
-        // this.animations.add('fall', [4]);
-        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); // 12fps no loop
-        // starting animation        
+
+        this.animations.add('die', [5, 6, 5, 6, 5, 6, 5, 6], 10); 
     }
     this.animations.play('stop');
 }
 
-// inherit from Phaser.Sprite
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
 
 Hero.prototype.move = function (direction) {
-    // guard
     if (this.isFrozen) { return; }
 
     const SPEED = 200;
     this.body.velocity.x = direction * SPEED;
 
-    // update image flipping & animations
     if (this.body.velocity.x < 0) {
         this.scale.x = -1;
     }
@@ -112,7 +84,6 @@ Hero.prototype.bounce = function () {
 };
 
 Hero.prototype.update = function () {
-    // update sprite animation, if it needs changing
     let animationName = this._getAnimationName();
     if (this.animations.name !== animationName) {
         this.animations.play(animationName);
@@ -133,16 +104,12 @@ Hero.prototype.die = function () {
     }, this);
 };
 
-// returns the animation name that should be playing depending on
-// current circumstances
 Hero.prototype._getAnimationName = function () {
-    let name = 'stop'; // default animation
+    let name = 'stop'; 
 
-    // dying
     if (!this.alive) {
         name = 'die';
     }
-    // frozen & not dying
     else if (this.isFrozen) {
         name = 'stop';
     }
@@ -153,21 +120,15 @@ Hero.prototype._getAnimationName = function () {
     return name;
 };
 
-//
-// Spider (enemy)
-//
 
 function Spider(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'spider');
 
-    // anchor
     this.anchor.set(0.5);
-    // animation
     this.animations.add('crawl', [0, 1, 2], 8, true);
     this.animations.add('die', [0, 4, 0, 4, 0, 4, 3, 3, 3, 3, 3, 3], 12);
     this.animations.play('crawl');
 
-    // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
     this.body.velocity.x = Spider.SPEED;
@@ -175,17 +136,15 @@ function Spider(game, x, y) {
 
 Spider.SPEED = 100;
 
-// inherit from Phaser.Sprite
 Spider.prototype = Object.create(Phaser.Sprite.prototype);
 Spider.prototype.constructor = Spider;
 
 Spider.prototype.update = function () {
-    // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
-        this.body.velocity.x = -Spider.SPEED; // turn left
+        this.body.velocity.x = -Spider.SPEED;
     }
     else if (this.body.touching.left || this.body.blocked.left) {
-        this.body.velocity.x = Spider.SPEED; // turn right
+        this.body.velocity.x = Spider.SPEED;
     }
 };
 
@@ -197,22 +156,16 @@ Spider.prototype.die = function () {
     }, this);
 };
 
-//
-// Darth Vader (enemy)
-//
 
 function Darth(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'darth');
 
-    // anchor
     this.anchor.set(0.5);
-    // animation
     this.animations.add('esq', [3, 4], 8, true);
     this.animations.add('dir', [7, 8], 8, true);
     this.animations.add('die', [4, 7, 4, 7, 4, 7, 4, 7, 4, 7, 4, 7], 12);
     this.animations.play('dir');
 
-    // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
     this.body.velocity.x = Darth.SPEED;
@@ -220,19 +173,17 @@ function Darth(game, x, y) {
 
 Darth.SPEED = 100;
 
-// inherit from Phaser.Sprite
 Darth.prototype = Object.create(Phaser.Sprite.prototype);
 Darth.prototype.constructor = Darth;
 
 Darth.prototype.update = function () {
-    // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
         this.body.velocity.x = -Darth.SPEED; // turn left
     this.animations.play('esq');
 
     }
     else if (this.body.touching.left || this.body.blocked.left) {
-        this.body.velocity.x = Darth.SPEED; // turn right
+        this.body.velocity.x = Darth.SPEED;
     this.animations.play('dir');
 
     }
@@ -246,21 +197,17 @@ Darth.prototype.die = function () {
 
 };
 
-// general
 
 
 function General(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'general');
 
-    // anchor
     this.anchor.set(0.5);
-    // animation
     this.animations.add('esq', [3, 4], 8, true);
     this.animations.add('dir', [7, 8], 8, true);
     this.animations.add('die', [4, 7, 4, 7, 4, 7, 4, 7, 4, 7, 4, 7], 12);
     this.animations.play('dir');
 
-    // physic properties
     this.game.physics.enable(this);
     this.body.collideWorldBounds = true;
     this.body.velocity.x = General.SPEED;
@@ -268,19 +215,17 @@ function General(game, x, y) {
 
 General.SPEED = 200;
 
-// inherit from Phaser.Sprite
 General.prototype = Object.create(Phaser.Sprite.prototype);
 General.prototype.constructor = General;
 
 General.prototype.update = function () {
-    // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
-        this.body.velocity.x = -General.SPEED; // turn left
+        this.body.velocity.x = -General.SPEED; 
     this.animations.play('esq');
 
     }
     else if (this.body.touching.left || this.body.blocked.left) {
-        this.body.velocity.x = General.SPEED; // turn right
+        this.body.velocity.x = General.SPEED; 
     this.animations.play('dir');
 
     }
@@ -294,39 +239,32 @@ General.prototype.die = function () {
 
 };
 
-// caminhao
 function Caminhao(game, x, y) {
     Phaser.Sprite.call(this, game, x, y, 'caminhao');
 
-    // anchor
     this.anchor.set(0.5);
-    // animation
     this.animations.add('esq', [0, 1], 1, true);
     this.animations.add('dir', [1, 0], 1, true);
     this.animations.add('die', [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], 12);
     this.animations.play('dir');
 
-    // physic properties
     this.game.physics.enable(this);
-    //this.body.collideWorldBounds = true;
     this.body.velocity.x = -Caminhao.SPEED;
 }
 
 Caminhao.SPEED = 40;
 
-// inherit from Phaser.Sprite
 Caminhao.prototype = Object.create(Phaser.Sprite.prototype);
 Caminhao.prototype.constructor = Caminhao;
 
 Caminhao.prototype.update = function () {
-    // check against walls and reverse direction if necessary
     if (this.body.touching.right || this.body.blocked.right) {
-        this.body.velocity.x = -Caminhao.SPEED; // turn left
+        this.body.velocity.x = -Caminhao.SPEED; 
     this.animations.play('esq');
 
     }
     else if (this.body.touching.left || this.body.blocked.left) {
-        this.body.velocity.x = Caminhao.SPEED; // turn right
+        this.body.velocity.x = Caminhao.SPEED; 
     this.animations.play('dir');
 
     }
@@ -341,14 +279,9 @@ Caminhao.prototype.die = function () {
 };
 
 
-// =============================================================================
-// Loading state
-// =============================================================================
-
 LoadingState = {};
 
 LoadingState.init = function () {
-    // keep crispy-looking pixels
     this.game.renderer.renderSession.roundPixels = true;
 };
 
@@ -389,7 +322,6 @@ LoadingState.preload = function () {
 
     this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
     this.game.load.spritesheet('caminhao', 'images/aa.png', 101, 70);
-    // Carregamento do Heroi
     this.game.load.spritesheet('hero1', 'images/hiro1.png', 32, 39);
     this.game.load.spritesheet('hero2', 'images/hiro2.png', 32, 36);
     this.game.load.spritesheet('hero3', 'images/hiro3.png', 32, 36);
@@ -416,10 +348,6 @@ LoadingState.create = function () {
     this.game.state.start('play', true, false, {level: 0});
 };
 
-// =============================================================================
-// Play state
-// =============================================================================
-
 PlayState = {coinPickupCount:0, life: 3};
 
 const LEVEL_COUNT = 5;
@@ -440,10 +368,8 @@ PlayState.init = function (data) {
 };
 
 PlayState.create = function () {
-    // fade in (from black)
     this.camera.flash('#000000');
 
-    // create sound entities
     this.sfx = {
         jump: this.game.add.audio('sfx:jump'),
         coin: this.game.add.audio('sfx:coin'),
@@ -455,11 +381,9 @@ PlayState.create = function () {
     this.bgm = this.game.add.audio('bgm');
     this.bgm.loopFull();
 
-    // create level entities and decoration
     this.game.add.image(0, 0, 'background'+this.level);
     this._loadLevel(this.game.cache.getJSON(`level:${this.level}`));
 
-    // create UI score boards
     this._createHud();
 };
 
@@ -467,7 +391,6 @@ PlayState.update = function () {
     this._handleCollisions();
     this._handleInput();
 
-    // update scoreboards
     this.coinFont.text = `x${this.coinPickupCount}`;
     this.lifeFont.text = `x${this.life}`;
     this.keyIcon.frame = this.hasKey ? 1 : 0;
@@ -486,27 +409,20 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.collide(this.generais, this.platforms);
     this.game.physics.arcade.collide(this.generais, this.enemyWalls);
     this.game.physics.arcade.collide(this.caminhoes, this.platforms);
-    // this.game.physics.arcade.collide(this.caminhoes, this.enemyWalls);
     this.game.physics.arcade.collide(this.hero, this.platforms);
 
-    // hero vs coins (pick up)
     this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin,
         null, this);
-    // hero vs key (pick up)
     this.game.physics.arcade.overlap(this.hero, this.key, this._onHeroVsKey,
         null, this);
-    // hero vs door (end level)
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
-        // ignore if there is no key or the player is on air
         function (hero, door) {
             return this.hasKey && hero.body.touching.down;
         }, this);
 
 
-    // collision: hero vs Teleport
     for(let i=0;i<this.tp_b.length;i++){
         this.game.physics.arcade.overlap(this.hero, this.tp_b[i], (hero,tp)=>{ this._onHeroVsTp_b(hero,tp,i)},
-            // ignore if the player is on air
             function (hero) {
                 return hero.body.touching.down;
             }, this);
@@ -514,7 +430,6 @@ PlayState._handleCollisions = function () {
     }
 
 
-    // collision: hero vs enemies (kill or die)
     this.game.physics.arcade.overlap(this.hero, this.spiders,
         this._onHeroVsEnemy, null, this);
     this.game.physics.arcade.overlap(this.hero, this.darths,
@@ -526,18 +441,17 @@ PlayState._handleCollisions = function () {
 };
 
 PlayState._handleInput = function () {
-    if (this.keys.left.isDown) { // move hero left
+    if (this.keys.left.isDown) { 
         this.hero.move(-1);
     }
-    else if (this.keys.right.isDown) { // move hero right
+    else if (this.keys.right.isDown) { 
         this.hero.move(1);
     }
-    else { // stop
+    else { 
         this.hero.move(0);
     }
 
-    // handle jump
-    const JUMP_HOLD = 200; // ms
+    const JUMP_HOLD = 200; 
     if (this.keys.up.downDuration(JUMP_HOLD)) {
         let didJump = this.hero.jump();
         if (didJump) { this.sfx.jump.play(); }
@@ -565,14 +479,12 @@ PlayState._onHeroVsCoin = function (hero, coin) {
 };
 
 PlayState._onHeroVsEnemy = function (hero, enemy) {
-    // the hero can kill enemies when is falling (after a jump, or a fall)
     if (hero.body.velocity.y > 0) {
         enemy.die();
         hero.bounce();
         this.sfx.stomp.play();
     }
-    else { // game over -> play dying animation and restart the game
-        this.life-=1;
+    else {
         if(this.life === 0){
             this.level = 100
         }
@@ -582,26 +494,20 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
             this.game.state.restart(true, false, {level: this.level});
         }, this);
 
-        // NOTE: bug in phaser in which it modifies 'touching' when
-        // checking for overlaps. This undoes that change so spiders don't
-        // 'bounce' agains the hero
         enemy.body.touching = enemy.body.wasTouching;
     }
 };
 PlayState._onHeroVsTp_b = function (hero, tp, i) {
-    // 'open' the door by changing its graphic and playing a sfx
     hero.reset(this.tp_a[i].worldPosition.x,this.tp_a[i].worldPosition.y-30)
 };
 
 PlayState._onHeroVsDoor = function (hero, door) {
-    // 'open' the door by changing its graphic and playing a sfx
     door.frame = 1;
     this.sfx.door.play();
     if(this.level === 100){
         this.life = 3;
         this.coinPickupCount= 0;
     }
-    // play 'enter door' animation and change to the next level when it ends
     hero.freeze();
     this.game.add.tween(hero)
         .to({x: this.door.x, alpha: 0}, 500, null, true)
@@ -611,7 +517,6 @@ PlayState._onHeroVsDoor = function (hero, door) {
 PlayState._goToNextLevel = function () {
     this.camera.fade('#000000');
     this.camera.onFadeComplete.addOnce(function () {
-        // change to next level
         this.game.state.restart(true, false, {
             level: this.level + 1
         });
@@ -619,7 +524,6 @@ PlayState._goToNextLevel = function () {
 };
 
 PlayState._loadLevel = function (data) {
-    // create all the groups/layers that we need
     this.bgDecoration = this.game.add.group();
     this.platforms = this.game.add.group();
     this.coins = this.game.add.group();
@@ -630,26 +534,22 @@ PlayState._loadLevel = function (data) {
     this.enemyWalls = this.game.add.group();
     this.enemyWalls.visible = false;
 
-    // spawn hero and enemies
 
     this._spawnCharacters({hero: data.hero, spiders: data.spiders?data.spiders:[], darths: data.darths?data.darths:[],
     caminhoes: data.caminhoes?data.caminhoes:[],generais: data.generais?data.generais:[]});
 
-    // spawn level decoration
     if(data.decoration)
     data.decoration.forEach(function (deco) {
         this.bgDecoration.add(
             this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
     }, this);
 
-    // spawn platforms
     data.platforms.forEach(this._spawnPlatform, this);
     if(data.elevador)
         data.elevador.forEach(this._spawnElevador, this);
     if(data.fire)
         data.fire.forEach(this._spawnFire, this);
 
-    // spawn important objects
     data.coins.forEach(this._spawnCoin, this);
             this.tp_a=[];
         this.tp_b=[];
@@ -664,7 +564,6 @@ PlayState._loadLevel = function (data) {
     if(data.door)
     this._spawnDoor(data.door.x, data.door.y);
 
-    // enable gravity
     let GRAVITY = 0
     if(temporaria == 1){
         GRAVITY = 25200;
@@ -675,31 +574,26 @@ PlayState._loadLevel = function (data) {
 };
 
 PlayState._spawnCharacters = function (data) {
-    // spawn spiders
     data.spiders.forEach(function (spider) {
         let sprite = new Spider(this.game, spider.x, spider.y);
         this.spiders.add(sprite);
     }, this);
 
-    // spawn darths
     data.darths.forEach(function (darth) {
         let sprite = new Darth(this.game, darth.x, darth.y);
         this.darths.add(sprite);
     }, this);
 
-    // spawn generais
     data.generais.forEach(function (general) {
         let sprite = new General(this.game, general.x, general.y);
         this.generais.add(sprite);
     }, this);
 
-    // spawn caminhao
     data.caminhoes.forEach(function (caminhao) {
         let sprite = new Caminhao(this.game, caminhao.x, caminhao.y);
         this.caminhoes.add(sprite);
     }, this);
 
-    // spawn hero
     this.hero = new Hero(this.game, data.hero.x, data.hero.y);
     this.game.add.existing(this.hero);
 };
@@ -708,12 +602,10 @@ PlayState._spawnPlatform = function (platform) {
     let sprite = this.platforms.create(
         platform.x, platform.y, platform.image);
 
-    // physics for platform sprites
     this.game.physics.enable(sprite);
     sprite.body.allowGravity = false;
     sprite.body.immovable = true;
 
-    // spawn invisible walls at each side, only detectable by enemies
     this._spawnEnemyWall(platform.x, platform.y, 'left');
     this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
 };
@@ -722,12 +614,10 @@ PlayState._spawnElevador = function (platform) {
     let sprite = this.platforms.create(
         platform.x, platform.y, platform.image);
 
-    // physics for platform sprites
     this.game.physics.enable(sprite);
     sprite.body.gravity.y = -25205;
     sprite.body.immovable = true;
 
-    // spawn invisible walls at each side, only detectable by enemies
     this._spawnEnemyWall(platform.x, platform.y, 'left');
     this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
 };
@@ -736,7 +626,6 @@ PlayState._spawnFire = function (platform) {
     let sprite = this.platforms.create(
         platform.x, platform.y, platform.image);
 
-    // physics for platform sprites
     this.game.physics.enable(sprite);
     if(temporaria == 2){
         sprite.body.gravity.y = -1500;
@@ -745,16 +634,13 @@ PlayState._spawnFire = function (platform) {
     }
     sprite.body.immovable = true;
 
-    // spawn invisible walls at each side, only detectable by enemies
     this._spawnEnemyWall(platform.x, platform.y, 'left');
     this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
 };
 
 PlayState._spawnEnemyWall = function (x, y, side) {
     let sprite = this.enemyWalls.create(x, y, 'invisible-wall');
-    // anchor and y displacement
     sprite.anchor.set(side === 'left' ? 1 : 0, 1);
-    // physic properties
     this.game.physics.enable(sprite);
     sprite.body.immovable = true;
     sprite.body.allowGravity = false;
@@ -764,23 +650,19 @@ PlayState._spawnCoin = function (coin) {
     let sprite = this.coins.create(coin.x, coin.y, 'coin');
     sprite.anchor.set(0.5, 0.5);
 
-    // physics (so we can detect overlap with the hero)
     this.game.physics.enable(sprite);
     sprite.body.allowGravity = false;
 
-    // animations
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looped
+    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); 
     sprite.animations.play('rotate');
 };
 
 PlayState._spawnKey = function (x, y) {
     this.key = this.bgDecoration.create(x, y, 'key');
     this.key.anchor.set(0.5, 0.5);
-    // enable physics to detect collisions, so the hero can pick the key up
     this.game.physics.enable(this.key);
     this.key.body.allowGravity = false;
 
-    // add a small 'up & down' animation via a tween
     this.key.y -= 3;
     this.game.add.tween(this.key)
         .to({y: this.key.y + 6}, 800, Phaser.Easing.Sinusoidal.InOut)
@@ -856,9 +738,6 @@ PlayState._createHud = function () {
 
 };
 
-// =============================================================================
-// entry point
-// =============================================================================
 
 window.onload = function () {
     let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
