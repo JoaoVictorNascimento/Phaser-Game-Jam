@@ -288,10 +288,10 @@ LoadingState.init = function () {
 LoadingState.preload = function () {
 
     this.game.load.json('level:5', 'data/level05.json');
-    this.game.load.json('level:0', 'data/level03.json');
+    this.game.load.json('level:0', 'data/level01.json');
     this.game.load.json('level:2', 'data/level00.json');
     this.game.load.json('level:1', 'data/level02.json');
-    this.game.load.json('level:4', 'data/level01.json');
+    this.game.load.json('level:4', 'data/level03.json');
     this.game.load.json('level:3', 'data/level04.json');
     this.game.load.json('level:100', 'data/Game_Over.json');
 
@@ -339,12 +339,6 @@ LoadingState.preload = function () {
     this.game.load.spritesheet('tp', 'images/tp.png', 168, 320);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
 
-    this.game.load.audio('sfx:jump', 'audio/jump.wav');
-    this.game.load.audio('sfx:coin', 'audio/coin.wav');
-    this.game.load.audio('sfx:key', 'audio/key.wav');
-    this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
-    this.game.load.audio('sfx:door', 'audio/door.wav');
-    this.game.load.audio('bgm', ['audio/bgm.mp3', 'audio/bgm.ogg']);
 };
 
 LoadingState.create = function () {
@@ -495,6 +489,7 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
         this.sfx.stomp.play();
     }
     else {
+        this.life-=1
         if(this.life === 0){
             this.level = 100
         }
