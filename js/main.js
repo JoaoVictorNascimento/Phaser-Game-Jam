@@ -308,6 +308,8 @@ LoadingState.preload = function () {
     this.game.load.image('background100', 'images/Game_Over.png');
 
     this.game.load.image('blackPage', 'images/black.png');
+    this.game.load.image('whitePage', 'images/white.png');
+    this.game.load.image('blackPage2', 'images/black2.png');
 
     this.game.load.image('invisible-wall', 'images/invisible_wall.png');
     this.game.load.image('ground', 'images/ground.png');
@@ -346,7 +348,7 @@ LoadingState.create = function () {
     this.game.state.start('play', true, false, {level: 0});
 };
 
-PlayState = {coinPickupCount:0, life: 3};
+PlayState = {coinPickupCount:0, life: 3, dead:0};
 
 const LEVEL_COUNT = 5;
 const LIFE = 50;
@@ -361,8 +363,10 @@ PlayState.init = function (data) {
     this.hasKey = false;
     if(data.level !== 100)
         this.level = (data.level || 0) % LEVEL_COUNT;
-    else
+    else{
         this.level=100;
+        this.dead+=1;
+    }
 };
 
 PlayState.create = function () {
@@ -746,7 +750,14 @@ PlayState._createHud = function () {
     this.hudlife.position.set(130, 10);
 
     if(temporaria > 2) {
-        let blackPage = this.game.make.image(0, 0, 'blackPage');
+        let blackPage
+        if(this.dead === 0)
+            blackPage = this.game.make.image(0, 0, 'blackPage2');
+        else if (this.dead === 1)
+            blackPage = this.game.make.image(0, 0, 'blackPage');
+        else
+            blackPage = this.game.make.image(0, 0, 'whitePage');
+
         lifeIcon.scale.setTo(.7, .7)
 
         this.hudblack = this.game.add.group()
